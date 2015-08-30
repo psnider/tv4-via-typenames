@@ -1,0 +1,31 @@
+{
+    "name": "tv4-via-typenames",
+    "version": "0.4.0",
+    "description": "General schemas management, for use on both client and server.",
+    "main": "amd/tv4-via-typenames.js",
+    "private": false,
+    "ignore": [
+        ".gitignore",
+        "**/*.txt",
+        "Build and Test.md",
+        "bower_components/*",
+        "node_modules/*",
+        "commonjs/*",
+        "decl/angularjs/*",
+        "decl/chai",
+        "decl/jquery",
+        "decl/mocha",
+        "decl/node/node*",
+        "decl/q/Q*",
+        "decl/tv4/tv4*",
+        "package.json",
+        "src",
+        "src/*",
+        "test",
+        "test/*"
+    ],
+    "dependencies": {
+    },
+    "devDependencies": {
+    }
+}

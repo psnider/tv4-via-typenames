@@ -1,0 +1,5 @@
+.DS_Store
+bower_components/*
+generated/*
+node_modules/*
+**/ts/*.js

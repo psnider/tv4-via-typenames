@@ -1,0 +1,33 @@
+{
+  "name": "tv4-via-typenames",
+  "version": "0.1.0",
+  "description": "Validation against schemas referenced by type names.",
+  "keywords": ["tv4", "validator", "schema", "json-schema", "type name"],
+  "main": "./commonjs/tv4-via-typenames.js",
+  "private": false,
+  "scripts": {
+    "test": "make test",
+    "postinstall": "make npm-postinstall",
+    "uninstall": "make npm-uninstall"
+  },
+  "repository": {
+    "type": "git",
+    "url" : "https://github.com/psnider/tv4-via-typenames.git"
+  },
+  "author": {
+    "name": "Peter Snider"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "tv4": "1.1.12"
+  },
+  "files": [
+    "decl/tv4-via-typenames/tv4-via-typenames.d.ts",
+    "commonjs/tv4-via-typenames.js",
+    "package.json",
+    "Makefile"
+  ],
+  "devDependencies": {
+    "chai": "3.2.0"
+  }
+}
