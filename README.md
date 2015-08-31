@@ -1,7 +1,7 @@
 # tv4-via-typenames
 [![NPM version](http://img.shields.io/npm/v/tv4-via-typenames.svg)](https://www.npmjs.org/package/tv4-via-typenames)
 [![Build Status via Travis CI](https://travis-ci.org/psnider/tv4-via-typenames.svg?branch=master)](https://travis-ci.org/psnider/tv4-via-typenames)
-[![Coverage Status](https://coveralls.io/repos/psnider/tv4-via-typenames/badge.svg)](https://coveralls.io/r/psnider/tv4-via-typenames)
+[![Coverage Status](https://coveralls.io/repos/psnider/tv4-via-typenames/badge.svg?branch=master&service=github)](https://coveralls.io/github/psnider/tv4-via-typenames?branch=master)
 
 # Overview
 tv4-via-typenames provides a typename-oriented schema loading and validation system.
@@ -37,14 +37,14 @@ These examples assume that tv4-via-typenames has been loaded into variable *tv4v
   configure this module with your function that retrieves schemas.  
   In [tv4-via-typenames-node](https://www.npmjs.com/package/tv4-via-typenames-node),
   *getSchemaFromTypename* reads schema files from the local file system.  
-  For a client, *getSchemaFromTypename* might request schemas from a server.
+  For a client, *getSchemaFromTypename* might request schemas from a server.  
   ```
   tv4vtn.configure({getSchemaFromTypename: myGetSchemasFunction}});
   ```  
 - ```loadSchemaDraftV4() : Promise<ISchema>```  
   Loads the Draft-4 standard schema.
   This must follow the call to configure(), and complete before using any other functions.
-  Returns a promise that resolves with the schema, or rejects with an error.
+  Returns a promise that resolves with the schema, or rejects with an error.  
   ```
   let v4Promise = tv4vtn.loadSchemaDraftV4();
   ```
@@ -54,14 +54,14 @@ These examples assume that tv4-via-typenames has been loaded into variable *tv4v
   You may call this function as needed. A schema will only be loaded and registered once,
   regardless of how many times it is referenced.
   Don't call this function until loadSchemaDraftV4() has resolved.
-  Returns a promise that resolves with an index of the schema load results, along with any errors encountered, or rejects with an error.
+  Returns a promise that resolves with an index of the schema load results, along with any errors encountered, or rejects with an error.  
   ```
   let loadPromise = tv4vtn.loadRequiredSchema(['Person', 'UUID']);
   ```
 - ```validate(typename: string, obj: any) : TV4MultiResult```  
   Validate the given object against the schema for given typename.
   You may call validate with a given typename after a loadRequiredSchema() has loaded that typename.
-  The typename may be for one of the indirectly referenced types.
+  The typename may be for one of the indirectly referenced types.  
   ```
   let validity = tv4vtn.validate('EmailAddress', user_entered_email_address);
   ```
