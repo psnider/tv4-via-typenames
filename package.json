@@ -14,7 +14,9 @@
   "scripts": {
     "test": "make test",
     "postinstall": "make npm-postinstall",
-    "uninstall": "make npm-uninstall"
+    "uninstall": "make npm-uninstall",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
