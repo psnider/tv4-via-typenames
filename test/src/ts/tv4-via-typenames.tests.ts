@@ -1,9 +1,9 @@
-/// <reference path='../../../decl/node/node.d.ts' />
-/// <reference path="../../../decl/es6-promise/es6-promise.d.ts" />
-/// <reference path='../../../decl/mocha/mocha.d.ts' />
-/// <reference path='../../../decl/chai/chai.d.ts' />
-/// <reference path='../../../decl/tv4-via-typenames/tv4-via-typenames.d.ts' />
-/// <reference path='../../../decl/tv4/tv4.d.ts' />
+/// <reference path='../../../typings/node/node.d.ts' />
+/// <reference path="../../../typings/es6-promise/es6-promise.d.ts" />
+/// <reference path='../../../typings/mocha/mocha.d.ts' />
+/// <reference path='../../../typings/chai/chai.d.ts' />
+/// <reference path='../../../typings/tv4-via-typenames/tv4-via-typenames.d.ts' />
+/// <reference path='../../../typings/tv4/tv4.d.ts' />
 
 
 

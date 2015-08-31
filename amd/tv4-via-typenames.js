@@ -1,6 +1,6 @@
-/// <reference path='../../decl/tv4-via-typenames/tv4-via-typenames.d.ts' />
-/// <reference path="../../decl/es6-promise/es6-promise.d.ts" />
-/// <reference path='../../decl/tv4/tv4.d.ts' />
+/// <reference path='../../typings/tv4-via-typenames/tv4-via-typenames.d.ts' />
+/// <reference path="../../typings/es6-promise/es6-promise.d.ts" />
+/// <reference path='../../typings/tv4/tv4.d.ts' />
 define(["require", "exports", 'tv4', 'tv4-via-typenames'], function (require, exports, tv4, tv4vtn) {
     // The name of the JSON schema file that describes the JSON schema, and against which we can validate our schema.
     exports.DRAFT_SCHEMA_ID = 'http://json-schema.org/draft-04/schema#';

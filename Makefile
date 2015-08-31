@@ -1,5 +1,4 @@
 PACKAGE_NAME=tv4-via-typenames
-DEFINITELY_TYPED=~/devel/reference/borisyankov/DefinitelyTyped
 
 
 
@@ -13,7 +12,7 @@ test: test-commonjs
 setup:
 	npm install
 	make install-decls
-	git checkout decl/tv4/tv4.d.ts
+	git checkout typings/tv4/tv4.d.ts
 
 .PHONY: clean
 clean:
@@ -32,27 +31,23 @@ echo:
 npm-postinstall:
 	@if [ -f '../../package.json' ]; then \
 		echo This is a dependent package, copying Typescript declaration files into main project... ;\
-		mkdir -p ../../decl ;\
-		cp -r decl/$(PACKAGE_NAME) ../../decl;\
+		mkdir -p ../../typings ;\
+		cp -r typings/$(PACKAGE_NAME) ../../typings;\
 	fi
 
 # if this uninstall is for a dependent package
 #     remove the declaration files from the containing project
 npm-uninstall:
 	@if [ -f '../../package.json' ]; then \
-		rm -fr ../../decl/$(PACKAGE_NAME);\
+		rm -fr ../../typings/$(PACKAGE_NAME);\
 	fi
 
-dev_decls=chai mocha
-dependent_decls=node tv4 es6-promise
 
 install-decls:
-	mkdir -p decl
-	$(foreach package, $(dev_decls), rm -fr decl/$(package); cp -r $(DEFINITELY_TYPED)/$(package) decl;)
-	$(foreach package, $(dependent_decls), rm -fr decl/$(package); cp -r $(DEFINITELY_TYPED)/$(package) decl;)
+	tsd install
 
 
-decl_files=$(wildcard decl/tv4-via-typenames/*.d.ts)
+decl_files=$(wildcard typings/tv4-via-typenames/*.d.ts)
 
 amd/%.js: src/ts/%.ts $(decl_files)
 	tsc --noEmitOnError --target ES5 --module amd --outDir generated $<
@@ -75,15 +70,7 @@ commonjs/%.js: test/src/ts/%.ts  $(decl_files)
 
 build-amd : amd/tv4-via-typenames.js
 
-	
-# commonjs/tv4-via-typenames.js: src/tv4-via-typenames.ts decl/tv4-via-typenames/tv4-via-typenames.d.ts
-# 	tsc --module commonjs --outDir commonjs src/tv4-via-typenames.ts
-
-
 build-commonjs : commonjs/tv4-via-typenames.js
-
-# commonjs/tv4-via-typenames.tests.js: test/src/tv4-via-typenames.tests.ts decl/tv4-via-typenames/tv4-via-typenames.d.ts
-# 	tsc --module commonjs --outDir commonjs test/src/tv4-via-typenames.tests.ts
 
 test_ts_filename := $(wildcard test/src/ts/*.ts)
 test_ts_basenames = $(notdir $(test_ts_filename))

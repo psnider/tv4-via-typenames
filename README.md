@@ -43,7 +43,7 @@ To validate data as type instances against their schema, run these operations:
   let validity = schema_files.validate('Person', some_person);
   ```
 
-See the [TypeScript decl file](decl/tv4-via-typenames/tv4-via-typenames.d.ts) for the full API.
+See the [TypeScript declaration file](typings/tv4-via-typenames/tv4-via-typenames.d.ts) for the full API.
 
 See the tests for more examples of usage.
 
@@ -72,7 +72,7 @@ Dependencies
 
 ## Installing as a Dependency of Another Module
 If you install this package as a dependency of another module, 
-it will install its TypeScript declaration files into that module's *./decl* directory, using the npm script *npm-postinstall*.
+it will install its TypeScript declaration files into that module's *./typings* directory, using the npm script *npm-postinstall*.
 
 
 # Build Setup
@@ -81,12 +81,13 @@ You only need to do this if you will be building (developing) tv4-via-typenames.
 ## Simple Setup
 
 This module is built with TypeScript 1.5, so you must have it installed in order to build. See [http://www.typescriptlang.org/#Download](http://www.typescriptlang.org/#Download)
-You do not need TypeScript in order to use this module,
-as the code that makes up the distribution is all javascript.
 
-You can install TypeScript globally:
+(You do not need TypeScript in order to use this module,
+as the code that makes up the distribution is all javascript.)
+
+You can install TypeScript and the TypeScript Declarations manager globally:
 ```
-npm install -g typescript
+npm install -g typescript tsd
 ```
 
 Then clone from git:
@@ -105,7 +106,7 @@ make setup
 ```
 ## Full Environment Setup
 See our full instructions for setting up a [MEAN stack + TypeScript](https://github.com/psnider/setup-mean-ts) enviroment,
-and setup the parts you want to use. We use Atom.
+and setup the parts you want to use. We use Atom as our editor.
 
 # Build
 To build:

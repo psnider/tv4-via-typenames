@@ -16,24 +16,20 @@
         "compileOnSave": false
     },
     "filesGlob": [
-        "./decl/**/*.d.ts",
+        "./typings/**/*.d.ts",
         "./src/**/ts/*.ts",
         "./test/**/ts/*.ts",
         "!./node_modules/**/*"
     ],
     "files": [
-        "./decl/chai/chai.d.ts",
-        "./decl/es6-promise/es6-promise.d.ts",
-        "./decl/mocha/mocha-node.d.ts",
-        "./decl/mocha/mocha.d.ts",
-        "./decl/node/node-0.10.d.ts",
-        "./decl/node/node-0.11.d.ts",
-        "./decl/node/node-0.8.8.d.ts",
-        "./decl/node/node.d.ts",
-        "./decl/tv4-via-typenames/tv4-via-typenames.d.ts",
-        "./decl/tv4/tv4.d.ts",
+        "./typings/chai/chai.d.ts",
+        "./typings/es6-promise/es6-promise.d.ts",
+        "./typings/mocha/mocha.d.ts",
+        "./typings/node/node.d.ts",
+        "./typings/tsd.d.ts",
+        "./typings/tv4-via-typenames/tv4-via-typenames.d.ts",
+        "./typings/tv4/tv4.d.ts",
         "./src/ts/tv4-via-typenames.ts",
-        "./test/schemas/ts/UUID.tests.ts",
         "./test/src/ts/tv4-via-typenames.tests.ts"
     ]
 }

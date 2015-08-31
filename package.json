@@ -22,7 +22,7 @@
     "tv4": "1.1.12"
   },
   "files": [
-    "decl/tv4-via-typenames/tv4-via-typenames.d.ts",
+    "typings/tv4-via-typenames/tv4-via-typenames.d.ts",
     "commonjs/tv4-via-typenames.js",
     "package.json",
     "Makefile"
