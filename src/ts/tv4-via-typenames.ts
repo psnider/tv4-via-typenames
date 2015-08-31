@@ -249,12 +249,12 @@ export function loadRequiredSchema(query_typenames: string | string[]) : Promise
 
 
 // @return true if the named schema has been loaded.
-export function hasSchema(typename : string) : boolean {
+function hasSchema(typename : string) : boolean {
     return (typename in schemas);
 }
 
 // @return The named schema if it is already loaded, otherwise undefined.
-export function getLoadedSchema(typename: string) : tv4vtn.ISchema {
+function getLoadedSchema(typename: string) : tv4vtn.ISchema {
     return schemas[typename];
 }
 
