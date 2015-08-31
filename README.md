@@ -1,4 +1,6 @@
 # tv4-via-typenames
+[![NPM version](http://img.shields.io/npm/v/tv4-via-typenames.svg)](https://www.npmjs.org/package/tv4-via-typenames)
+[![Build Status via Travis CI](https://travis-ci.org/psnider/tv4-via-typenames.svg?branch=master)](https://travis-ci.org/psnider/tv4-via-typenames)
 
 # Overview
 tv4-via-typenames provides a typename-oriented schema loading and validation system.
