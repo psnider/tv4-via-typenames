@@ -100,17 +100,14 @@ You only need to do this if you will be building (developing) tv4-via-typenames.
 
 ## Simple Setup
 
-This module is built with TypeScript 1.5, so you must have it installed in order to build. See [http://www.typescriptlang.org/#Download](http://www.typescriptlang.org/#Download)
+This module is built with TypeScript 1.5, so you must have it installed in order to build.
+**npm install** will install *TypeScript* and *tsd* locally.
+See [http://www.typescriptlang.org/#Download](http://www.typescriptlang.org/#Download)
 
 (You do not need TypeScript in order to use this module,
 as the code that makes up the distribution is all javascript.)
 
-You can install TypeScript and the TypeScript Declarations manager globally:
-```
-npm install -g typescript tsd
-```
-
-Then clone from git:
+Start by cloning from git:
 ```
 git clone git@github.com:psnider/tv4-via-typenames.git
 ```
@@ -147,10 +144,7 @@ make
 
 # Test
 
-The test-runner is mocha, so you should probably have that installed globally:
-```
-npm install -g mocha
-```
+**npm install** will install *mocha* and *chai* locally.
 
 Then run the tests:
 ```
