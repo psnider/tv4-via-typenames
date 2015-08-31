@@ -13,6 +13,7 @@
   "private": false,
   "scripts": {
     "test": "make test",
+    "test-travis": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec ./commonjs/*.tests.js",
     "postinstall": "make npm-postinstall",
     "uninstall": "make npm-uninstall",
     "preversion": "npm test",
@@ -37,6 +38,8 @@
   ],
   "devDependencies": {
     "chai": "3.2.0",
+    "coveralls": "^2.11.4",
+    "istanbul": "^0.3.19",
     "mocha": "^2.3.0",
     "tsd": "^0.6.4",
     "typescript": "^1.5.3"
