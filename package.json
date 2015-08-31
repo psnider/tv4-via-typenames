@@ -1,6 +1,6 @@
 {
   "name": "tv4-via-typenames",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Validation against schemas referenced by type names.",
   "keywords": [
     "tv4",
