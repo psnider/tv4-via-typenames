@@ -210,12 +210,10 @@ exports.loadRequiredSchema = loadRequiredSchema;
 function hasSchema(typename) {
     return (typename in schemas);
 }
-exports.hasSchema = hasSchema;
 // @return The named schema if it is already loaded, otherwise undefined.
 function getLoadedSchema(typename) {
     return schemas[typename];
 }
-exports.getLoadedSchema = getLoadedSchema;
 // expose private functions for testing as needed.
 exports.test = {
     getSchemaIDFromTypename: getSchemaIDFromTypename,
