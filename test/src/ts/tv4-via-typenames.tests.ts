@@ -7,11 +7,6 @@
 
 
 
-//----------- TEST of COMMON code -----------------
-//
-
-
-
 import fs                   = require('fs');
 import CHAI                 = require('chai');
 const expect                = CHAI.expect;
@@ -21,7 +16,7 @@ import tv4                  = require('tv4');
 
 
 
-describe('cscSchemasCommon', function() {
+describe('tv4-via-typenames', function() {
 
     const SIMPLE_SCHEMA = {
         "id": "urn:Simple.schema.json#",
@@ -71,7 +66,7 @@ describe('cscSchemasCommon', function() {
     function load_and_register_schema(typename : string) : Promise<boolean> {
         return load_schema(typename).then(
             (data) => {
-                const succeeded = tv4vtn.registerSchema(data.schema);
+                const succeeded = tv4vtn.test.registerSchema(data.schema);
                 return succeeded;
             }
         );
@@ -79,7 +74,7 @@ describe('cscSchemasCommon', function() {
     
 
     function loadSchemaFromTypename(typename : string) : Promise<{filename: string; schema: tv4vtn.ISchema;}> {
-        let schema = tv4vtn.getLoadedSchema(typename);
+        let schema = tv4vtn.test.getLoadedSchema(typename);
         if (schema) {
             return Promise.resolve({filename: typename, schema: schema});
         } else {
@@ -109,13 +104,13 @@ describe('cscSchemasCommon', function() {
     describe('getSchemaIDFromTypename', function() {
 
         it('+ should generate URN as the ID', function() {
-            const id = tv4vtn.getSchemaIDFromTypename('A');
+            const id = tv4vtn.test.getSchemaIDFromTypename('A');
             expect(id).to.equal('urn:A.schema.json#');
         });
 
 
         it('+ should get the ID for the Draft-04 standard', function() {
-            const id = tv4vtn.getSchemaIDFromTypename(tv4vtn.DRAFT_SCHEMA_TYPENAME);
+            const id = tv4vtn.test.getSchemaIDFromTypename(tv4vtn.DRAFT_SCHEMA_TYPENAME);
             expect(id).to.equal(tv4vtn.DRAFT_SCHEMA_ID);
         });
 
@@ -125,13 +120,13 @@ describe('cscSchemasCommon', function() {
     describe('getTypenameFromSchemaID', function() {
 
         it('+ should get typename from an ID', function() {
-            const typename = tv4vtn.getTypenameFromSchemaID('urn:A1_b2.schema.json#');
+            const typename = tv4vtn.test.getTypenameFromSchemaID('urn:A1_b2.schema.json#');
             expect(typename).to.equal('A1_b2');
         });
 
 
         it('+ should get typename from the ID for the Draft-04 standard', function() {
-            const typename = tv4vtn.getTypenameFromSchemaID(tv4vtn.DRAFT_SCHEMA_ID);
+            const typename = tv4vtn.test.getTypenameFromSchemaID(tv4vtn.DRAFT_SCHEMA_ID);
             expect(typename).to.equal(tv4vtn.DRAFT_SCHEMA_TYPENAME);
         });
 
@@ -141,12 +136,12 @@ describe('cscSchemasCommon', function() {
     describe('loadSchemaDraftV4', function() {
 
         it('+ should load the schema that describes the draft 4 JSON-schema standard', function(done) {
-            expect(tv4vtn.hasSchema(tv4vtn.DRAFT_SCHEMA_TYPENAME)).to.be.false;
+            expect(tv4vtn.test.hasSchema(tv4vtn.DRAFT_SCHEMA_TYPENAME)).to.be.false;
             const was_resolved = false;
             tv4vtn.loadSchemaDraftV4().then(
                 (result) => {
-                    expect(tv4vtn.hasSchema(tv4vtn.DRAFT_SCHEMA_TYPENAME)).to.be.true;
-                    const schema = tv4vtn.getLoadedSchema(tv4vtn.DRAFT_SCHEMA_TYPENAME);
+                    expect(tv4vtn.test.hasSchema(tv4vtn.DRAFT_SCHEMA_TYPENAME)).to.be.true;
+                    const schema = tv4vtn.test.getLoadedSchema(tv4vtn.DRAFT_SCHEMA_TYPENAME);
                     expect(schema.id).to.equal('http://json-schema.org/draft-04/schema#');
                     done();
                 },
@@ -165,12 +160,12 @@ describe('cscSchemasCommon', function() {
 
 
         it('+ should register a schema upon the first request', function(done) {
-            expect(tv4vtn.hasSchema('SHA1')).to.be.false;
+            expect(tv4vtn.test.hasSchema('SHA1')).to.be.false;
             load_and_register_schema('SHA1').then(
                 (succeeded) => {
                     expect(succeeded).to.be.true;
-                    expect(tv4vtn.hasSchema('SHA1')).to.be.true;
-                    let schema = tv4vtn.getLoadedSchema('SHA1');
+                    expect(tv4vtn.test.hasSchema('SHA1')).to.be.true;
+                    let schema = tv4vtn.test.getLoadedSchema('SHA1');
                     expect(schema.id).to.equal('urn:SHA1.schema.json#');
                     done();
                 },
@@ -183,13 +178,13 @@ describe('cscSchemasCommon', function() {
             load_and_register_schema('SHA1').then(
                 (succeeded) => {
                     expect(succeeded).to.be.true;
-                    let schema = tv4vtn.getLoadedSchema('SHA1');
+                    let schema = tv4vtn.test.getLoadedSchema('SHA1');
                     // mark the existing schema, to test later that it was not reloaded
                     schema['marked by test'] = true;
                     return load_and_register_schema('SHA1').then(
                         (succeeded) => {
                             expect(succeeded).to.be.true;
-                            let schemaRetried = tv4vtn.getLoadedSchema('SHA1');
+                            let schemaRetried = tv4vtn.test.getLoadedSchema('SHA1');
                             expect(schemaRetried).to.have.property('marked by test');
                             done();
                         }
@@ -201,11 +196,11 @@ describe('cscSchemasCommon', function() {
 
 
         it('+ should not register an invalid schema', function(done) {
-            expect(tv4vtn.hasSchema('test-invalid-type')).to.be.false;
+            expect(tv4vtn.test.hasSchema('test-invalid-type')).to.be.false;
             load_and_register_schema('test-invalid-type').then(
                 (succeeded) => {
                     expect(succeeded).to.be.false;
-                    expect(tv4vtn.hasSchema('test-invalid-type')).to.be.false;
+                    expect(tv4vtn.test.hasSchema('test-invalid-type')).to.be.false;
                     done();
                 },
                 (error) => {done(error)}
@@ -221,7 +216,7 @@ describe('cscSchemasCommon', function() {
 
 
         it('+ should validate a valid simple schema', function() {
-            const result : TV4MultiResult = tv4vtn.validateSchema(SIMPLE_SCHEMA);
+            const result : TV4MultiResult = tv4vtn.test.validateSchema(SIMPLE_SCHEMA);
             expect(result.errors).to.be.empty;
         });
 
@@ -234,47 +229,12 @@ describe('cscSchemasCommon', function() {
                 "name": "ABC",
                 "type": "misspelled_typename"
             };
-            const result : TV4MultiResult = tv4vtn.validateSchema(SCHEMA_WO_TYPE);
+            const result : TV4MultiResult = tv4vtn.test.validateSchema(SCHEMA_WO_TYPE);
             expect(result).to.not.be.null;
             expect(result.valid).to.be.false;
             expect(result.errors.length).to.equal(1);
             const error = result.errors[0];
             expect(error.message).to.equal('Data does not match any schemas from "anyOf"');
-        });
-
-    });
-
-
-    describe('validate', function() {
-
-        before(ensure_loadSchemaDraftV4);
-
-
-        it('+ should validate a valid simple object', function() {
-            tv4vtn.registerSchema(SIMPLE_SCHEMA);
-            const result : TV4MultiResult = tv4vtn.validate('Simple', 'any string is ok');
-            expect(result.valid).to.be.true;
-            expect(result.errors).to.be.empty;
-        });
-
-
-        it('- should not validate an object for which there is no schema', function() {
-            const result : TV4MultiResult = tv4vtn.validate('NON_EXISTANT', 'any string is ok');
-            expect(result.valid).to.be.false;
-            expect(result.errors.length).to.equal(1);
-            const error = result.errors[0];
-            expect(error.message).to.equal('Schema not found');
-        });
-
-
-        it('+ should not validate an invalid simple object', function() {
-            tv4vtn.registerSchema(SIMPLE_SCHEMA);
-            const result : TV4MultiResult = tv4vtn.validate('Simple', 0);
-            expect(result).to.not.be.null;
-            expect(result.valid).to.be.false;
-            expect(result.errors.length).to.equal(1);
-            const error = result.errors[0];
-            expect(error.message).to.equal('Invalid type: number (expected string)');
         });
 
     });
@@ -289,7 +249,7 @@ describe('cscSchemasCommon', function() {
         describe('getReferencedTypenames', function() {
 
             it('+ should return the types referenced directly in a schema by "$ref"', function(done) {
-                tv4vtn.getReferencedTypenames('Person').then(
+                tv4vtn.test.getReferencedTypenames('Person').then(
                     (result : tv4vtn.ILoadSchemaResult) => {
                         expect(result.typename).to.equal('Person');
                         expect(result.referencedTypenames.length).to.equal(3);
@@ -305,7 +265,7 @@ describe('cscSchemasCommon', function() {
 
 
             it('should return data for an invalid schema', function(done) {
-                tv4vtn.getReferencedTypenames('test-invalid-type').then(
+                tv4vtn.test.getReferencedTypenames('test-invalid-type').then(
                     (result : tv4vtn.ILoadSchemaResult) => {
                         expect(result.typename).to.equal('test-invalid-type');
                         expect(result.registered).to.be.false;
@@ -317,7 +277,7 @@ describe('cscSchemasCommon', function() {
 
 
             it('should reject a schema that cant be loaded', function(done) {
-                tv4vtn.getReferencedTypenames('test-no-schema-file').then(
+                tv4vtn.test.getReferencedTypenames('test-no-schema-file').then(
                     (result : tv4vtn.ILoadSchemaResult) => {
                         done(new Error('test-no-schema-file should have rejected'));
                     },
@@ -334,9 +294,9 @@ describe('cscSchemasCommon', function() {
         it('+ should register any new types referenced directly by a schema via "$ref"', function(done) {
             tv4vtn.loadRequiredSchema('Person').then(
                 (result : tv4vtn.ILoadSchemaResultIndex) => {
-                    expect(tv4vtn.hasSchema('EmailAddress')).to.be.true;
-                    expect(tv4vtn.hasSchema('PersonName')).to.be.true;
-                    expect(tv4vtn.hasSchema('DateTime')).to.be.true;
+                    expect(tv4vtn.test.hasSchema('EmailAddress')).to.be.true;
+                    expect(tv4vtn.test.hasSchema('PersonName')).to.be.true;
+                    expect(tv4vtn.test.hasSchema('DateTime')).to.be.true;
                     done();
                 }
             );
@@ -373,5 +333,39 @@ describe('cscSchemasCommon', function() {
         
     });
 
+
+    describe('validate', function() {
+
+        before(ensure_loadSchemaDraftV4);
+
+
+        it('+ should validate a valid simple object', function() {
+            tv4vtn.test.registerSchema(SIMPLE_SCHEMA);
+            const result : TV4MultiResult = tv4vtn.validate('Simple', 'any string is ok');
+            expect(result.valid).to.be.true;
+            expect(result.errors).to.be.empty;
+        });
+
+
+        it('- should not validate an object for which there is no schema', function() {
+            const result : TV4MultiResult = tv4vtn.validate('NON_EXISTANT', 'any string is ok');
+            expect(result.valid).to.be.false;
+            expect(result.errors.length).to.equal(1);
+            const error = result.errors[0];
+            expect(error.message).to.equal('Schema not found');
+        });
+
+
+        it('+ should not validate an invalid simple object', function() {
+            tv4vtn.test.registerSchema(SIMPLE_SCHEMA);
+            const result : TV4MultiResult = tv4vtn.validate('Simple', 0);
+            expect(result).to.not.be.null;
+            expect(result.valid).to.be.false;
+            expect(result.errors.length).to.equal(1);
+            const error = result.errors[0];
+            expect(error.message).to.equal('Invalid type: number (expected string)');
+        });
+
+    });
 
 });

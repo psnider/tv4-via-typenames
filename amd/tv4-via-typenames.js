@@ -26,6 +26,7 @@ define(["require", "exports", 'tv4', 'tv4-via-typenames'], function (require, ex
         getSchemaFromTypename = params.getSchemaFromTypename;
     }
     exports.configure = configure;
+    // @return The schema ID that corresponds to the given typename.
     function getSchemaIDFromTypename(typename) {
         if (typename === tv4vtn.DRAFT_SCHEMA_TYPENAME) {
             return tv4vtn.DRAFT_SCHEMA_ID;
@@ -34,7 +35,7 @@ define(["require", "exports", 'tv4', 'tv4-via-typenames'], function (require, ex
             return "urn:" + typename + ".schema.json#";
         }
     }
-    exports.getSchemaIDFromTypename = getSchemaIDFromTypename;
+    // @return The typename that corresponds to the given schema ID.
     function getTypenameFromSchemaID(id) {
         if (id === tv4vtn.DRAFT_SCHEMA_ID) {
             return tv4vtn.DRAFT_SCHEMA_TYPENAME;
@@ -44,7 +45,6 @@ define(["require", "exports", 'tv4', 'tv4-via-typenames'], function (require, ex
             return ((m != null) ? m[1] : null);
         }
     }
-    exports.getTypenameFromSchemaID = getTypenameFromSchemaID;
     function loadSchemaDraftV4() {
         return getSchemaFromTypename(exports.DRAFT_SCHEMA_TYPENAME).then(function (result) {
             registerSchema(result.schema);
@@ -52,6 +52,11 @@ define(["require", "exports", 'tv4', 'tv4-via-typenames'], function (require, ex
         });
     }
     exports.loadSchemaDraftV4 = loadSchemaDraftV4;
+    // Regisiter the schema with the schema validation system.
+    // The schema is validated by this function, and registered only if it is valid.
+    // If a schema with this schema's typename has already been registered, then this returns true with no other action.
+    // @return true if successful, or if the schema had already been registered.
+    // false if either the schema.id doesn't contain the typename or if the schema is invalid.
     function registerSchema(schema) {
         var typename = getTypenameFromSchemaID(schema.id);
         var registered_schema = tv4.getSchema(schema.id);
@@ -82,7 +87,6 @@ define(["require", "exports", 'tv4', 'tv4-via-typenames'], function (require, ex
             return true;
         }
     }
-    exports.registerSchema = registerSchema;
     // Validate the given JSON against the schema for typename.
     function tv4_validate(typename, query) {
         var id = getSchemaIDFromTypename(typename);
@@ -106,6 +110,8 @@ define(["require", "exports", 'tv4', 'tv4-via-typenames'], function (require, ex
         return result;
     }
     exports.validate = validate;
+    // Validate the given schema against the IETF /draft-04/ specification schema.
+    // @return The results of validation.
     function validateSchema(schema) {
         var result = tv4_validateSchema(schema);
         return result;
@@ -198,12 +204,24 @@ define(["require", "exports", 'tv4', 'tv4-via-typenames'], function (require, ex
         });
     }
     exports.loadRequiredSchema = loadRequiredSchema;
+    // @return true if the named schema has been loaded.
     function hasSchema(typename) {
         return (typename in schemas);
     }
     exports.hasSchema = hasSchema;
+    // @return The named schema if it is already loaded, otherwise undefined.
     function getLoadedSchema(typename) {
         return schemas[typename];
     }
     exports.getLoadedSchema = getLoadedSchema;
+    // expose private functions for testing as needed.
+    exports.test = {
+        getSchemaIDFromTypename: getSchemaIDFromTypename,
+        getTypenameFromSchemaID: getTypenameFromSchemaID,
+        registerSchema: registerSchema,
+        validateSchema: validateSchema,
+        getReferencedTypenames: getReferencedTypenames,
+        hasSchema: hasSchema,
+        getLoadedSchema: getLoadedSchema
+    };
 });

@@ -16,7 +16,7 @@ tv4-via-typenames works for either client or server.
 
 
 # A Complete Example for Node
-See the separate module [tv4-via-typenames-node](https://github.com/psnider/tv4-via-typenames-node).
+See the separate module [tv4-via-typenames-node](https://www.npmjs.com/package/tv4-via-typenames-node).
 
 # Capabilities not Supported
 tv4-via-typenames does not:  
@@ -26,27 +26,45 @@ tv4-via-typenames does not:
 
 
 # API
-To validate data as type instances against their schema, run these operations:
+These are the main components of the API.
+You can find the full API in the [TypeScript declaration file](typings/tv4-via-typenames/tv4-via-typenames.d.ts) for this module.
 
-- construct an instance of this module
-  For example, on node you use the SchemaFiles module:  
+The function signatures are given with their TypeScript type annotations.
+These examples assume that tv4-via-typenames has been loaded into variable *tv4vtn*.
+
+- configure(params : ISchemasConfig) : void  
+  configure this module with your function that retrieves schemas.  
+  In [tv4-via-typenames-node](https://www.npmjs.com/package/tv4-via-typenames-node),
+  *getSchemaFromTypename* reads schema files from the local file system.  
+  For a client, *getSchemaFromTypename* might request schemas from a server.
   ```
-  let schema_files = new SchemaFiles(null, done);
+  tv4vtn.configure({getSchemaFromTypename: myGetSchemasFunction}});
   ```  
-- Call loadRequiredSchema() with a list of the top-level type names of the schema you will use.  
-  You may load the schema after the constructor's *done* callback is called:  
+- loadSchemaDraftV4() : Promise<ISchema>
+  Loads the Draft-4 standard schema.
+  This must follow the call to configure(), and complete before using any other functions.
+  Returns a promise that resolves with the schema, or rejects with an error.
   ```
-  let promise = schema_files.loadRequiredSchema(['SomeRequest', 'Person']);
+  let v4Promise = tv4vtn.loadSchemaDraftV4();
   ```
-  This will also recursively load any schema referenced by the named schema.  
-- Call validate() to validate a data object.
-  After the loadRequiredSchema() call resolves, you may validate data of any of the types referenced by those schema.  
+- loadRequiredSchema(typenames: string | string[]) : Promise<ILoadSchemaResultIndex>
+  Find the schemas with the given typenames, and all referenced schema, both directly and indirectly referenced.
+  When this succeeds, all schema required by the requested types have been loaded and validated.
+  You may call this function as needed. A schema will only be loaded and registered once,
+  regardless of how many times it is referenced.
+  Don't call this function until loadSchemaDraftV4() has resolved.
+  Returns a promise that resolves with an index of the schema load results, along with any errors encountered, or rejects with an error.
   ```
-  let validity = schema_files.validate('Person', some_person);
+  let loadPromise = tv4vtn.loadRequiredSchema(['Person', 'UUID']);
   ```
-
-See the [TypeScript declaration file](typings/tv4-via-typenames/tv4-via-typenames.d.ts) for the full API.
-
+- validate(typename: string, obj: any) : TV4MultiResult
+  Validate the given object against the schema for given typename.
+  You may call validate with a given typename after a loadRequiredSchema() has loaded that typename.
+  The typename may be for one of the indirectly referenced types.
+  ```
+  let validity = tv4vtn.validate('EmailAddress', user_entered_email_address);
+  ```
+  
 See the tests for more examples of usage.
 
 # Conventions

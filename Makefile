@@ -63,10 +63,6 @@ commonjs/%.js: test/src/ts/%.ts  $(decl_files)
 	mv generated/$(@F) commonjs
 
 
-########################################################################################################
-# Common
-
-
 
 build-amd : amd/tv4-via-typenames.js
 
