@@ -32,7 +32,7 @@ You can find the full API in the [TypeScript declaration file](typings/tv4-via-t
 The function signatures are given with their TypeScript type annotations.
 These examples assume that tv4-via-typenames has been loaded into variable *tv4vtn*.
 
-- configure(params : ISchemasConfig) : void  
+- ```configure(params : ISchemasConfig) : void```  
   configure this module with your function that retrieves schemas.  
   In [tv4-via-typenames-node](https://www.npmjs.com/package/tv4-via-typenames-node),
   *getSchemaFromTypename* reads schema files from the local file system.  
@@ -40,14 +40,14 @@ These examples assume that tv4-via-typenames has been loaded into variable *tv4v
   ```
   tv4vtn.configure({getSchemaFromTypename: myGetSchemasFunction}});
   ```  
-- loadSchemaDraftV4() : Promise<ISchema>
+- ```loadSchemaDraftV4() : Promise<ISchema>```  
   Loads the Draft-4 standard schema.
   This must follow the call to configure(), and complete before using any other functions.
   Returns a promise that resolves with the schema, or rejects with an error.
   ```
   let v4Promise = tv4vtn.loadSchemaDraftV4();
   ```
-- loadRequiredSchema(typenames: string | string[]) : Promise<ILoadSchemaResultIndex>
+- ```loadRequiredSchema(typenames: string | string[]) : Promise<ILoadSchemaResultIndex>```  
   Find the schemas with the given typenames, and all referenced schema, both directly and indirectly referenced.
   When this succeeds, all schema required by the requested types have been loaded and validated.
   You may call this function as needed. A schema will only be loaded and registered once,
@@ -57,7 +57,7 @@ These examples assume that tv4-via-typenames has been loaded into variable *tv4v
   ```
   let loadPromise = tv4vtn.loadRequiredSchema(['Person', 'UUID']);
   ```
-- validate(typename: string, obj: any) : TV4MultiResult
+- ```validate(typename: string, obj: any) : TV4MultiResult```  
   Validate the given object against the schema for given typename.
   You may call validate with a given typename after a loadRequiredSchema() has loaded that typename.
   The typename may be for one of the indirectly referenced types.
