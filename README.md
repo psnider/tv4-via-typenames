@@ -86,7 +86,7 @@ You may use this module directly as a commonjs module or as an amd module.
 
 Dependencies
 
-- es6
+- es5
 - es6 promises
 - tv4
 

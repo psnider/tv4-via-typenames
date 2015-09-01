@@ -7,7 +7,8 @@
     "validator",
     "schema",
     "json-schema",
-    "type name"
+    "type name",
+    "typescript"
   ],
   "main": "./commonjs/tv4-via-typenames.js",
   "private": false,
