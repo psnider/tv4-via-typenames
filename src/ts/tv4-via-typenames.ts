@@ -19,7 +19,7 @@ export var SCHEMA_ID_REF_REGEXP = /\$ref": "urn:([a-zA-Z0-9][-_a-zA-Z0-9]*).sche
 // Aids in debugging and test
 var schemas : tv4vtn.IndexedSchemas;  // set by configure()
 
-var getSchemaFromTypename : (typename : string) => Promise<{filename: string; schema: tv4vtn.ISchema;}>;
+var getSchemaFromTypename : (typename : string) => Promise<{filename: string; schema: tv4.JsonSchema;}>;
 
 
 
@@ -35,7 +35,7 @@ checkNativePromises();
 
 
  // configure may only be called once
-export function configure(params : tv4vtn.ISchemasConfig) : void {
+export function configure(params : tv4vtn.SchemasConfig) : void {
     if (schemas) {
         throw new Error('configure may only be called once');
     }
@@ -65,7 +65,7 @@ function getTypenameFromSchemaID(id : string) : string {
 }
 
 
-export function loadSchemaDraftV4() : Promise<tv4vtn.ISchema> {
+export function loadSchemaDraftV4() : Promise<tv4.JsonSchema> {
     return getSchemaFromTypename(DRAFT_SCHEMA_TYPENAME).then(
         function(result) {
             registerSchema(result.schema);
@@ -80,7 +80,7 @@ export function loadSchemaDraftV4() : Promise<tv4vtn.ISchema> {
 // If a schema with this schema's typename has already been registered, then this returns true with no other action.
 // @return true if successful, or if the schema had already been registered.
 // false if either the schema.id doesn't contain the typename or if the schema is invalid.
-function registerSchema(schema : tv4vtn.ISchema) : boolean {
+function registerSchema(schema : tv4.JsonSchema) : boolean {
     var typename = getTypenameFromSchemaID(schema.id);
     var registered_schema = tv4.getSchema(schema.id);
     if (registered_schema == null) {
@@ -111,11 +111,11 @@ function registerSchema(schema : tv4vtn.ISchema) : boolean {
 
 
 // Validate the given JSON against the schema for typename.
-function tv4_validate(typename: string, query: any) : TV4MultiResult {
+function tv4_validate(typename: string, query: any) : tv4.MultiResult {
     var id = getSchemaIDFromTypename(typename);
     var schema = tv4.getSchema(id);
     if (schema == null) {
-        var error : TV4Error = {code: 0, message: 'Schema not found', dataPath: '', schemaPath: id};
+        var error : tv4.ValidationError = {code: 0, message: 'Schema not found', dataPath: '', schemaPath: id};
         return {valid: false, missing: [], errors: [error]};
     }
     var report = tv4.validateMultiple(query, schema);
@@ -124,7 +124,7 @@ function tv4_validate(typename: string, query: any) : TV4MultiResult {
 
 
 // Validate the given schema.
-function tv4_validateSchema(schema: tv4vtn.ISchema) : TV4MultiResult {
+function tv4_validateSchema(schema: tv4.JsonSchema) : tv4.MultiResult {
     var is_draft_schema = (schema.id === DRAFT_SCHEMA_ID);
     var draft_schema = (is_draft_schema) ? schema : tv4.getSchema(DRAFT_SCHEMA_ID);
     var report = tv4.validateMultiple(schema, draft_schema);
@@ -132,7 +132,7 @@ function tv4_validateSchema(schema: tv4vtn.ISchema) : TV4MultiResult {
 }
 
 
-export function validate(typename: string, query: any) : TV4MultiResult {
+export function validate(typename: string, query: any) : tv4.MultiResult {
     var result = tv4_validate(typename, query);
     return result;
 }
@@ -140,7 +140,7 @@ export function validate(typename: string, query: any) : TV4MultiResult {
 
 // Validate the given schema against the IETF /draft-04/ specification schema.
 // @return The results of validation.
-export function validateSchema(schema : any) : TV4MultiResult {
+export function validateSchema(schema : any) : tv4.MultiResult {
     var result = tv4_validateSchema(schema);
     return result;
 }
@@ -155,10 +155,10 @@ export function validateSchema(schema : any) : TV4MultiResult {
 //  and that rejects in case of:
 //   - failure to load the file
 // @note: only exported for testing, not part of public API
-export function getReferencedTypenames(query_typename : string) : Promise<tv4vtn.ILoadSchemaResult> {
+export function getReferencedTypenames(query_typename : string) : Promise<tv4vtn.LoadSchemaResult> {
     return getSchemaFromTypename(query_typename).then(
         function(load_file_result) {
-            let validation : TV4MultiResult = validateSchema(load_file_result.schema);
+            let validation : tv4.MultiResult = validateSchema(load_file_result.schema);
             let do_register = (validation.valid && (validation.errors.length == 0));
             let registered = false;
             if (do_register) {
@@ -176,22 +176,22 @@ export function getReferencedTypenames(query_typename : string) : Promise<tv4vtn
                 }
             }
             let referencedTypenames = Object.keys(referencedTypenames_set);
-            let result : tv4vtn.ILoadSchemaResult = {typename: query_typename, referencedTypenames: referencedTypenames, validation: validation, registered: registered};
+            let result : tv4vtn.LoadSchemaResult = {typename: query_typename, referencedTypenames: referencedTypenames, validation: validation, registered: registered};
             return result;
         }
     );
 }
 
 
-function loadSchemaTypesRecursive(query_typename, checked_schemas : tv4vtn.ILoadSchemaResultIndex) : Promise<tv4vtn.ILoadSchemaResultIndex> {
-    return new Promise<tv4vtn.ILoadSchemaResultIndex>(
+function loadSchemaTypesRecursive(query_typename, checked_schemas : tv4vtn.LoadSchemaResultIndex) : Promise<tv4vtn.LoadSchemaResultIndex> {
+    return new Promise<tv4vtn.LoadSchemaResultIndex>(
         (resolve, reject) => {
             if (query_typename in checked_schemas) {
                 // it has already been processed, so don't repeat
                 resolve(checked_schemas);
             } else {
                 let load_promise = getReferencedTypenames(query_typename).then(
-                    (result : tv4vtn.ILoadSchemaResult) => {
+                    (result : tv4vtn.LoadSchemaResult) => {
                         if (result.referencedTypenames.length > 0) {
                             var referenced_types_promises = [];
                             for (var i in result.referencedTypenames) {
@@ -223,15 +223,15 @@ function loadSchemaTypesRecursive(query_typename, checked_schemas : tv4vtn.ILoad
 }
 
 
-export function loadRequiredSchema(query_typenames: string | string[]) : Promise<tv4vtn.ILoadSchemaResultIndex> {
-    return new Promise<tv4vtn.ILoadSchemaResultIndex>(
+export function loadRequiredSchema(query_typenames: string | string[]) : Promise<tv4vtn.LoadSchemaResultIndex> {
+    return new Promise<tv4vtn.LoadSchemaResultIndex>(
         (resolve, reject) => {
             var query_typenames_array;
             if (typeof query_typenames === 'string')
                 query_typenames_array = [query_typenames];
             else
                 query_typenames_array = query_typenames;
-            var checked_schemas : tv4vtn.ILoadSchemaResultIndex = {};
+            var checked_schemas : tv4vtn.LoadSchemaResultIndex = {};
             var typenames_promises = [];
             for (let query_typename of query_typenames_array) {
                 var promise = loadSchemaTypesRecursive(query_typename, checked_schemas);
@@ -254,7 +254,7 @@ function hasSchema(typename : string) : boolean {
 }
 
 // @return The named schema if it is already loaded, otherwise undefined.
-function getLoadedSchema(typename: string) : tv4vtn.ISchema {
+function getLoadedSchema(typename: string) : tv4.JsonSchema {
     return schemas[typename];
 }
 

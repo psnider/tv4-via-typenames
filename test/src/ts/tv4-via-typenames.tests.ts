@@ -18,7 +18,7 @@ import tv4                  = require('tv4');
 
 describe('tv4-via-typenames', function() {
 
-    const SIMPLE_SCHEMA = {
+    const SIMPLE_SCHEMA : tv4.JsonSchema = {
         "id": "urn:Simple.schema.json#",
         "$schema": "http://json-schema.org/draft-04/schema#",
         "description": "A simple test schema.",
@@ -52,7 +52,7 @@ describe('tv4-via-typenames', function() {
 
     // load the schema for the named type from the like named file.
     // The promise returns the loaded schema
-    function load_schema(typename : string) : Promise<{filename: string; schema: tv4vtn.ISchema;}> {
+    function load_schema(typename : string) : Promise<{filename: string; schema: tv4.JsonSchema;}> {
         const filename = SCHEMAS_DIR + '/' + typename + '.schema.json';
         return readJSONFile(filename).then(
             (data) => {
@@ -73,7 +73,7 @@ describe('tv4-via-typenames', function() {
     }
     
 
-    function loadSchemaFromTypename(typename : string) : Promise<{filename: string; schema: tv4vtn.ISchema;}> {
+    function loadSchemaFromTypename(typename : string) : Promise<{filename: string; schema: tv4.JsonSchema;}> {
         let schema = tv4vtn.test.getLoadedSchema(typename);
         if (schema) {
             return Promise.resolve({filename: typename, schema: schema});
@@ -216,7 +216,7 @@ describe('tv4-via-typenames', function() {
 
 
         it('+ should validate a valid simple schema', function() {
-            const result : TV4MultiResult = tv4vtn.test.validateSchema(SIMPLE_SCHEMA);
+            const result : tv4.MultiResult = tv4vtn.test.validateSchema(SIMPLE_SCHEMA);
             expect(result.errors).to.be.empty;
         });
 
@@ -229,7 +229,7 @@ describe('tv4-via-typenames', function() {
                 "name": "ABC",
                 "type": "misspelled_typename"
             };
-            const result : TV4MultiResult = tv4vtn.test.validateSchema(SCHEMA_WO_TYPE);
+            const result : tv4.MultiResult = tv4vtn.test.validateSchema(SCHEMA_WO_TYPE);
             expect(result).to.not.be.null;
             expect(result.valid).to.be.false;
             expect(result.errors.length).to.equal(1);
@@ -250,7 +250,7 @@ describe('tv4-via-typenames', function() {
 
             it('+ should return the types referenced directly in a schema by "$ref"', function(done) {
                 tv4vtn.test.getReferencedTypenames('Person').then(
-                    (result : tv4vtn.ILoadSchemaResult) => {
+                    (result : tv4vtn.LoadSchemaResult) => {
                         expect(result.typename).to.equal('Person');
                         expect(result.referencedTypenames.length).to.equal(3);
                         expect(result.referencedTypenames.indexOf('EmailAddress')).to.not.equal(-1);
@@ -266,7 +266,7 @@ describe('tv4-via-typenames', function() {
 
             it('should return data for an invalid schema', function(done) {
                 tv4vtn.test.getReferencedTypenames('test-invalid-type').then(
-                    (result : tv4vtn.ILoadSchemaResult) => {
+                    (result : tv4vtn.LoadSchemaResult) => {
                         expect(result.typename).to.equal('test-invalid-type');
                         expect(result.registered).to.be.false;
                         expect(result.validation.valid).to.be.false;
@@ -278,7 +278,7 @@ describe('tv4-via-typenames', function() {
 
             it('should reject a schema that cant be loaded', function(done) {
                 tv4vtn.test.getReferencedTypenames('test-no-schema-file').then(
-                    (result : tv4vtn.ILoadSchemaResult) => {
+                    (result : tv4vtn.LoadSchemaResult) => {
                         done(new Error('test-no-schema-file should have rejected'));
                     },
                     (error) => {
@@ -293,7 +293,7 @@ describe('tv4-via-typenames', function() {
 
         it('+ should register any new types referenced directly by a schema via "$ref"', function(done) {
             tv4vtn.loadRequiredSchema('Person').then(
-                (result : tv4vtn.ILoadSchemaResultIndex) => {
+                (result : tv4vtn.LoadSchemaResultIndex) => {
                     expect(tv4vtn.test.hasSchema('EmailAddress')).to.be.true;
                     expect(tv4vtn.test.hasSchema('PersonName')).to.be.true;
                     expect(tv4vtn.test.hasSchema('DateTime')).to.be.true;
@@ -306,7 +306,7 @@ describe('tv4-via-typenames', function() {
         it('+ should return the types referenced indirectly by a schema via "$ref"', function(done) {
             // Person refers to DateTime which refers to Date and Time
             tv4vtn.loadRequiredSchema('Person').then(
-                (result : tv4vtn.ILoadSchemaResultIndex) => {
+                (result : tv4vtn.LoadSchemaResultIndex) => {
                     expect(result).to.have.property('Person');
                     expect(result).to.have.property('EmailAddress');
                     expect(result).to.have.property('PersonName');
@@ -321,7 +321,7 @@ describe('tv4-via-typenames', function() {
 
         it('+ should return an error for an invalid schema', function(done) {
             tv4vtn.loadRequiredSchema('test-invalid-type').then(
-                (result : tv4vtn.ILoadSchemaResultIndex) => {
+                (result : tv4vtn.LoadSchemaResultIndex) => {
                     done(new Error('expected promise to reject'));
                 },
                 (error) => {
@@ -341,14 +341,14 @@ describe('tv4-via-typenames', function() {
 
         it('+ should validate a valid simple object', function() {
             tv4vtn.test.registerSchema(SIMPLE_SCHEMA);
-            const result : TV4MultiResult = tv4vtn.validate('Simple', 'any string is ok');
+            const result : tv4.MultiResult = tv4vtn.validate('Simple', 'any string is ok');
             expect(result.valid).to.be.true;
             expect(result.errors).to.be.empty;
         });
 
 
         it('- should not validate an object for which there is no schema', function() {
-            const result : TV4MultiResult = tv4vtn.validate('NON_EXISTANT', 'any string is ok');
+            const result : tv4.MultiResult = tv4vtn.validate('NON_EXISTANT', 'any string is ok');
             expect(result.valid).to.be.false;
             expect(result.errors.length).to.equal(1);
             const error = result.errors[0];
@@ -358,7 +358,7 @@ describe('tv4-via-typenames', function() {
 
         it('+ should not validate an invalid simple object', function() {
             tv4vtn.test.registerSchema(SIMPLE_SCHEMA);
-            const result : TV4MultiResult = tv4vtn.validate('Simple', 0);
+            const result : tv4.MultiResult = tv4vtn.validate('Simple', 0);
             expect(result).to.not.be.null;
             expect(result.valid).to.be.false;
             expect(result.errors.length).to.equal(1);
