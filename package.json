@@ -29,7 +29,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "tv4": "^1.1.12"
+    "tv4": "^1.2.7"
   },
   "files": [
     "typings/tv4-via-typenames/tv4-via-typenames.d.ts",
