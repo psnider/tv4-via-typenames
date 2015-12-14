@@ -190,7 +190,10 @@ describe('tv4-via-typenames', function () {
                 tv4vtn.test.getReferencedTypenames('test-no-schema-file').then(function (result) {
                     done(new Error('test-no-schema-file should have rejected'));
                 }, function (error) {
-                    expect(error.message).to.equal("ENOENT, open './test/data/schemas/test-no-schema-file.schema.json'");
+                    // error.message was:
+                    //     ENOENT, open './test/data/schemas/test-no-schema-file.schema.json'
+                    //     ENOENT: no such file or directory, open './test/data/schemas/test-no-schema-file.schema.json'
+                    expect(error.message).to.match(/^ENOENT: /);
                     done();
                 });
             });

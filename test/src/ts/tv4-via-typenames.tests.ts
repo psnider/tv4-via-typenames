@@ -71,7 +71,7 @@ describe('tv4-via-typenames', function() {
             }
         );
     }
-    
+
 
     function loadSchemaFromTypename(typename : string) : Promise<{filename: string; schema: tv4.JsonSchema;}> {
         let schema = tv4vtn.test.getLoadedSchema(typename);
@@ -81,8 +81,8 @@ describe('tv4-via-typenames', function() {
             return load_schema(typename);
         }
     }
-    
-    
+
+
     function ensure_loadSchemaDraftV4(done) {
         tv4vtn.loadSchemaDraftV4().then(
             (result) => {
@@ -92,8 +92,8 @@ describe('tv4-via-typenames', function() {
                 done(error);
             }
         );
-    }        
-    
+    }
+
     // Configure the schemas service to use readSchemaFileFromTypename() from the Schemas service, so we can use this projects schemas
     before(function() {
         const params = {getSchemaFromTypename: loadSchemaFromTypename};
@@ -282,7 +282,10 @@ describe('tv4-via-typenames', function() {
                         done(new Error('test-no-schema-file should have rejected'));
                     },
                     (error) => {
-                        expect(error.message).to.equal("ENOENT, open './test/data/schemas/test-no-schema-file.schema.json'");
+                        // error.message was:
+                        //     ENOENT, open './test/data/schemas/test-no-schema-file.schema.json'
+                        //     ENOENT: no such file or directory, open './test/data/schemas/test-no-schema-file.schema.json'
+                        expect(error.message).to.match(/^ENOENT: /)
                         done();
                     }
                 );
@@ -330,7 +333,7 @@ describe('tv4-via-typenames', function() {
                 }
             );
         });
-        
+
     });
 
 
