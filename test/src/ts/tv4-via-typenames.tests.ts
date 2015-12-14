@@ -285,6 +285,7 @@ describe('tv4-via-typenames', function() {
                         // error.message was:
                         //     ENOENT, open './test/data/schemas/test-no-schema-file.schema.json'
                         //     ENOENT: no such file or directory, open './test/data/schemas/test-no-schema-file.schema.json'
+                        console.log('error.message='+error.message)
                         expect(error.message).to.match(/^ENOENT: /)
                         done();
                     }
